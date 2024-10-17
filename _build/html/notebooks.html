@@ -418,7 +418,10 @@ document.write(`
 <span class="k">drop if</span> <span class="o">!</span><span class="nf">inrange</span>(days,<span class="m">0</span>,<span class="m">10000</span>)
 <span class="k">replace</span> days = .<span class="m">5</span><span class="k"> if</span> days<span class="o">==</span><span class="m">0</span>
 <span class="k">stset</span> days, fail(died)
-<span class="k">sts graph</span>, fail per(<span class="m">10000</span>)
+<span class="k">sts graph</span>, <span class="cs">///</span>
+   fail per(<span class="m">10000</span>) <span class="cs">///</span>
+   ylab(<span class="m">0</span>(<span class="m">1</span>)<span class="m">5</span>) tmax(<span class="m">90</span>) <span class="cs">///</span>
+   xlab(<span class="m">0</span>(<span class="m">30</span>)<span class="m">90</span>)
 <span class="k">noi sts list</span>, fail at(<span class="m">30</span> <span class="m">90</span>)
 }
 </pre></div>
@@ -460,6 +463,32 @@ document.write(`
 </div>
 </div>
 </div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-stata notranslate"><div class="highlight"><pre><span></span><span class="k">graph</span> export ..<span class="o">/</span>figures<span class="o">/</span>mort1<span class="m">.</span>png,<span class="k"> replace</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(file ../figures/mort1.png not found)
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>failed to export to the specified format.
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>r(198);
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+</div>
+</div>
+<p><img alt="" src="_images/mort1.png" /></p>
+<ul class="simple">
+<li><p><a class="reference download internal" download="" href="_downloads/9b2c803c39a300607915aafcbdee2f92/massie_2024.pdf"><span class="xref download myst">Massie, et al</span></a></p></li>
+</ul>
+<p><img alt="" src="_images/." /></p>
 </section>
 
     <script type="text/x-thebe-config">
