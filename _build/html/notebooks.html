@@ -386,175 +386,76 @@ document.write(`
 <h1>Some code<a class="headerlink" href="#some-code" title="Permalink to this heading">#</a></h1>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-stata notranslate"><div class="highlight"><pre><span></span><span class="c1">// use data/donor_live, clear</span>
-<span class="c1">// cd data</span>
+<div class="highlight-stata notranslate"><div class="highlight"><pre><span></span><span class="k">qui</span> {
+<span class="k">global</span> repo https:<span class="o">//</span>github<span class="m">.</span>com<span class="o">/</span>jhurepos<span class="o">/</span>donor<span class="o">/</span>raw<span class="o">/</span>main<span class="o">/</span>data<span class="o">/</span>donor_live<span class="m">.</span>dta
+<span class="k">use</span> <span class="s">&quot;</span><span class="vg">${repo}</span><span class="s">&quot;</span><span class="k"> if</span> don_org1<span class="o">==</span><span class="s">&quot;LKI&quot;</span> | don_org1<span class="o">==</span><span class="s">&quot;RKI&quot;</span> <span class="o">&amp;</span> <span class="nf">inrange</span>(don_age,<span class="m">17</span>,<span class="m">90</span>),<span class="k"> clear</span>
+<span class="k">keep</span> don_age don_gender don_race don_recov_dt pers_ssa_death 
+<span class="k">count</span>
+<span class="k">if</span> <span class="m">0</span> {
+    <span class="c1">//race</span>
+    <span class="m">0</span>, white
+    <span class="m">16</span>, black
+    <span class="m">64</span>, asian
+    <span class="m">2000</span>, hispanic
+
+    <span class="c1">//race</span>
+    <span class="s">&quot;F&quot;</span>, female
+    <span class="s">&quot;M&quot;</span>, male
+    }
+}
 </pre></div>
 </div>
 </div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-stata notranslate"><div class="highlight"><pre><span></span><span class="k">count</span>
-<span class="c1">//lookfor age sex race death date </span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  0
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-stata notranslate"><div class="highlight"><pre><span></span><span class="k">keep</span> don_age don_race don_recov_dt pers_ssa_death
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>no variables defined
-</pre></div>
-</div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>r(111);
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-stata notranslate"><div class="highlight"><pre><span></span><span class="c1">//list in 1/10</span>
-<span class="k">count if</span> <span class="o">!</span><span class="nf">missing</span>(pers_ssa_death)
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  2,121
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-stata notranslate"><div class="highlight"><pre><span></span><span class="c1">//codebook</span>
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-stata notranslate"><div class="highlight"><pre><span></span><span class="k">gen</span> died=<span class="o">!</span><span class="nf">missing</span>(pers_ssa_death)
+<div class="highlight-stata notranslate"><div class="highlight"><pre><span></span><span class="k">qui</span> {
+<span class="k">gen</span> died=<span class="o">!</span><span class="nf">missing</span>(pers_ssa_death)
 <span class="k">replace</span> died=<span class="m">0</span><span class="k"> if</span> pers_ssa_death<span class="o">&gt;</span>d(30dec2011)
 <span class="k">gen</span> end_dt=<span class="nf">min</span>(pers_ssa_death,d(30dec2011))
-<span class="k">tab</span> died
+<span class="c1">// tab died</span>
 <span class="k">g</span> days=end_dt<span class="o">-</span>don_recov_dt
+<span class="k">drop if</span> <span class="o">!</span><span class="nf">inrange</span>(days,<span class="m">0</span>,<span class="m">10000</span>)
 <span class="k">replace</span> days = .<span class="m">5</span><span class="k"> if</span> days<span class="o">==</span><span class="m">0</span>
-<span class="c1">// codebook days</span>
-<span class="k">hist</span> days
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(961 real changes made)
-
-
-
-       died |      Freq.     Percent        Cum.
-------------+-----------------------------------
-          0 |    115,494       99.01       99.01
-          1 |      1,160        0.99      100.00
-------------+-----------------------------------
-      Total |    116,654      100.00
-
-
-(17 real changes made)
-
-(bin=50, start=.5, width=177.11)
-
-file /Users/apollo/.stata_kernel_cache/graph4.svg saved as SVG format
-file /Users/apollo/.stata_kernel_cache/graph4.pdf saved as PDF format
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-stata notranslate"><div class="highlight"><pre><span></span><span class="k">drop if</span> <span class="o">!</span><span class="nf">inrange</span>(days,<span class="m">0</span>,<span class="m">10000</span>)
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(0 observations deleted)
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-stata notranslate"><div class="highlight"><pre><span></span><span class="k">count</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  116,654
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-stata notranslate"><div class="highlight"><pre><span></span><span class="k">stset</span> days, fail(died)
+<span class="k">stset</span> days, fail(died)
 <span class="k">sts graph</span>, fail per(<span class="m">10000</span>)
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Survival-time data settings
-
-         Failure event: died!=0 &amp; died&lt;.
-Observed time interval: (0, days]
-     Exit on or before: failure
-
---------------------------------------------------------------------------
-    116,654  total observations
-          0  exclusions
---------------------------------------------------------------------------
-    116,654  observations remaining, representing
-      1,160  failures in single-record/single-failure data
-  407672189  total analysis time at risk and under observation
-                                                At risk from t =         0
-                                     Earliest observed entry t =         0
-                                          Last observed exit t =     8,856
-
-
-        Failure _d: died
-  Analysis time _t: days
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-stata notranslate"><div class="highlight"><pre><span></span><span class="k">sts list</span>, fail at(<span class="m">30</span> <span class="m">90</span>)
+<span class="k">noi sts list</span>, fail at(<span class="m">30</span> <span class="m">90</span>)
+}
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>        Failure _d: died
-  Analysis time _t: days
-
-Kaplan–Meier failure function
-
-              Beg.              Failure      Std.
-    Time     total     Fail    function     error     [95% conf. int.]
-----------------------------------------------------------------------
-      30    116065       29      0.0002    0.0000     0.0002    0.0004
-      90    115098       19      0.0004    0.0001     0.0003    0.0005
-----------------------------------------------------------------------
-Note: Failure function is calculated over full data and evaluated at
-      indicated times; it is not calculated from aggregates shown at left.
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  Analysis time _t: days
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Kaplan–Meier failure function
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>              Beg.              Failure      Std.
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    Time     total     Fail    function     error     [95% conf. int.]
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>----------------------------------------------------------------------
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>      30    110980       20      0.0002    0.0000     0.0001    0.0003
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>      90    110067       11      0.0003    0.0001     0.0002    0.0004
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>----------------------------------------------------------------------
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Note: Failure function is calculated over full data and evaluated at
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>      indicated times; it is not calculated from aggregates shown at left.
 </pre></div>
 </div>
 </div>
